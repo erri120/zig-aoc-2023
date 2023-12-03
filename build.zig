@@ -5,7 +5,7 @@ const CompileStep = std.Build.Step.Compile;
 /// set this to true to link libc
 const should_link_libc = false;
 
-const required_zig_version = std.SemanticVersion.parse("0.12.0-dev.1754+2a3226453") catch unreachable;
+// const required_zig_version = std.SemanticVersion.parse("0.12.0-dev.1754+2a3226453") catch unreachable;
 
 fn linkObject(b: *Build, obj: *CompileStep) void {
     if (should_link_libc) obj.linkLibC();
@@ -15,10 +15,10 @@ fn linkObject(b: *Build, obj: *CompileStep) void {
 }
 
 pub fn build(b: *Build) void {
-    if (comptime @import("builtin").zig_version.order(required_zig_version) == .lt) {
-        std.debug.print("Warning: Your version of Zig too old. You will need to download a newer build\n", .{});
-        std.os.exit(1);
-    }
+    // if (comptime @import("builtin").zig_version.order(required_zig_version) == .lt) {
+    //     std.debug.print("Warning: Your version of Zig too old. You will need to download a newer build\n", .{});
+    //     std.os.exit(1);
+    // }
 
     const target = b.standardTargetOptions(.{});
     const mode = b.standardOptimizeOption(.{});
@@ -34,7 +34,7 @@ pub fn build(b: *Build) void {
     });
 
     const run_generate = b.addRunArtifact(build_generate);
-    run_generate.setCwd(.{ .path = std.fs.path.dirname(@src().file).? });
+    // run_generate.setCwd(.{ .path = std.fs.path.dirname(@src().file).? });
     generate.dependOn(&run_generate.step);
 
     // Set up an exe for each day

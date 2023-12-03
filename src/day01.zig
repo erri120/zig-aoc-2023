@@ -8,28 +8,41 @@ const BitSet = std.DynamicBitSet;
 const util = @import("util.zig");
 const gpa = util.gpa;
 
-const data = @embedFile("data/day01.txt");
+const data: []const u8 = @embedFile("data/day01.txt");
 
 pub fn main() !void {
-    
-}
+    var res: u32 = 0;
 
-// Useful stdlib functions
-const tokenizeAny = std.mem.tokenizeAny;
-const tokenizeSeq = std.mem.tokenizeSequence;
-const tokenizeSca = std.mem.tokenizeScalar;
-const splitAny = std.mem.splitAny;
-const splitSeq = std.mem.splitSequence;
-const splitSca = std.mem.splitScalar;
-const indexOf = std.mem.indexOfScalar;
-const indexOfAny = std.mem.indexOfAny;
-const indexOfStr = std.mem.indexOfPosLinear;
-const lastIndexOf = std.mem.lastIndexOfScalar;
-const lastIndexOfAny = std.mem.lastIndexOfAny;
-const lastIndexOfStr = std.mem.lastIndexOfLinear;
-const trim = std.mem.trim;
-const sliceMin = std.mem.min;
-const sliceMax = std.mem.max;
+    var iterator = std.mem.splitScalar(u8, data, '\n');
+    while (iterator.next()) |value| {
+        if (value.len == 0) continue;
+
+        var firstDigit: ?u8 = null;
+        var secondDigit: ?u8 = null;
+
+        for (value) |c| {
+            if (!std.ascii.isDigit(c)) {
+                continue;
+            }
+
+            if (firstDigit == null) {
+                firstDigit = c;
+            } else {
+                secondDigit = c;
+            }
+        }
+
+        if (firstDigit) |first| {
+            const twoDigitNumber = [2]u8{ first, secondDigit orelse first };
+            // print("{s}: {s}\n", .{ value, twoDigitNumber });
+
+            const parseResult = try std.fmt.parseUnsigned(u8, &twoDigitNumber, 10);
+            res += parseResult;
+        }
+    }
+
+    print("{d}", .{res});
+}
 
 const parseInt = std.fmt.parseInt;
 const parseFloat = std.fmt.parseFloat;
@@ -40,7 +53,3 @@ const assert = std.debug.assert;
 const sort = std.sort.block;
 const asc = std.sort.asc;
 const desc = std.sort.desc;
-
-// Generated from template/template.zig.
-// Run `zig build generate` to update.
-// Only unmodified days will be updated.
